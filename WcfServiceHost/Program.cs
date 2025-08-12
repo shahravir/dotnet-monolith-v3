@@ -9,22 +9,29 @@ namespace WcfServiceHost
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting WCF Service Host...");
+            Console.WriteLine("Starting Mobile Banking Gateway Service...");
             Console.WriteLine("Press any key to stop the service.");
 
             try
             {
                 // Create the service host
-                using (ServiceHost host = new ServiceHost(typeof(SampleService)))
+                using (ServiceHost host = new ServiceHost(typeof(BankingGatewayService)))
                 {
                     // Start the service
                     host.Open();
 
-                    Console.WriteLine("Service is running at:");
+                    Console.WriteLine("Mobile Banking Gateway Service is running at:");
                     foreach (var endpoint in host.Description.Endpoints)
                     {
                         Console.WriteLine($"  {endpoint.Address}");
                     }
+                    Console.WriteLine();
+                    Console.WriteLine("Available endpoints:");
+                    Console.WriteLine("  - Authentication & Security");
+                    Console.WriteLine("  - Customer Management");
+                    Console.WriteLine("  - Account Management");
+                    Console.WriteLine("  - Transaction Management");
+                    Console.WriteLine("  - Bill Payments");
                     Console.WriteLine();
                     Console.WriteLine("Press any key to stop the service...");
                     Console.ReadKey();

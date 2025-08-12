@@ -42,10 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountService.cs" />
     <Compile Include="AuthenticationService.cs" />
+    <Compile Include="BillPaymentService.cs" />
+    <Compile Include="CustomerService.cs" />
     <Compile Include="ISampleService.cs" />
     <Compile Include="Models.cs" />
     <Compile Include="SampleService.cs" />
+    <Compile Include="TransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

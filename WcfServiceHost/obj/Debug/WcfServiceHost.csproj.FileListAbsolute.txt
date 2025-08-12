@@ -1,11 +1,11 @@
-/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.csproj.AssemblyReference.cache
-/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.csproj.CoreCompileInputs.cache
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceHost.exe.config
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceHost.exe
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceHost.pdb
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceLibrary.dll
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceLibrary.pdb
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/bin/Debug/WcfServiceLibrary.dll.config
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.csproj.AssemblyReference.cache
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.csproj.CoreCompileInputs.cache
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.csproj.CopyComplete
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.exe
 /Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceHost/obj/Debug/WcfServiceHost.pdb
