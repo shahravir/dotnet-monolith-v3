@@ -41,5 +41,14 @@ namespace WcfServiceLibrary
         /// <returns>The echoed message</returns>
         [OperationContract]
         string Echo(string message);
+
+        /// <summary>
+        /// Authenticates a user with username and password
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="password">The password</param>
+        /// <returns>Login result with token and user info</returns>
+        [OperationContract]
+        LoginResult Login(string username, string password);
     }
 }

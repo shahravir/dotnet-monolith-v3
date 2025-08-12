@@ -45,8 +45,57 @@ namespace WcfServiceClient
                     string echo = client.Echo("Hello WCF Service!");
                     Console.WriteLine($"   Result: {echo}\n");
 
+                    // Test Login functionality
+                    Console.WriteLine("5. Testing Login:");
+                    
+                    // Test successful login with admin
+                    Console.WriteLine("   Testing admin login:");
+                    LoginResult adminLogin = client.Login("admin", "admin123");
+                    if (adminLogin.Success)
+                    {
+                        Console.WriteLine($"   Success! Token: {adminLogin.Token}");
+                        Console.WriteLine($"   User: {adminLogin.User.FullName} ({adminLogin.User.Role})");
+                        Console.WriteLine($"   Email: {adminLogin.User.Email}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"   Failed: {adminLogin.ErrorMessage}");
+                    }
+
+                    // Test successful login with regular user
+                    Console.WriteLine("   Testing user login:");
+                    LoginResult userLogin = client.Login("user", "user123");
+                    if (userLogin.Success)
+                    {
+                        Console.WriteLine($"   Success! Token: {userLogin.Token}");
+                        Console.WriteLine($"   User: {userLogin.User.FullName} ({userLogin.User.Role})");
+                        Console.WriteLine($"   Email: {userLogin.User.Email}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"   Failed: {userLogin.ErrorMessage}");
+                    }
+
+                    // Test failed login
+                    Console.WriteLine("   Testing failed login:");
+                    LoginResult failedLogin = client.Login("admin", "wrongpassword");
+                    if (!failedLogin.Success)
+                    {
+                        Console.WriteLine($"   Expected failure: {failedLogin.ErrorMessage}");
+                    }
+
+                    // Test invalid credentials
+                    Console.WriteLine("   Testing invalid credentials:");
+                    LoginResult invalidLogin = client.Login("nonexistent", "password");
+                    if (!invalidLogin.Success)
+                    {
+                        Console.WriteLine($"   Expected failure: {invalidLogin.ErrorMessage}");
+                    }
+
+                    Console.WriteLine();
+
                     // Test error handling
-                    Console.WriteLine("5. Testing error handling:");
+                    Console.WriteLine("6. Testing error handling:");
                     try
                     {
                         double invalidResult = client.Calculate(10, 0, "divide");

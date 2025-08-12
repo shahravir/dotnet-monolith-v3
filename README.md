@@ -1,360 +1,656 @@
-# .NET Framework 4.0 WCF Service Application
+# WCF Service Project - Comprehensive Documentation
 
-A production-ready Windows Communication Foundation (WCF) service application built with .NET Framework 4.0.
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [Architecture Overview](#architecture-overview)
+3. [Interface Specifications](#interface-specifications)
+4. [File Responsibilities](#file-responsibilities)
+5. [Component Diagram](#component-diagram)
+6. [Sequence Diagrams](#sequence-diagrams)
+7. [Functional Flow](#functional-flow)
+8. [Configuration Details](#configuration-details)
+9. [Build and Deployment](#build-and-deployment)
+10. [Testing and Validation](#testing-and-validation)
 
-## Project Structure
+## Project Overview
 
+### Purpose
+This is a production-ready Windows Communication Foundation (WCF) service application built with .NET Framework 4.0. The service provides basic operations including greetings, calculations, server time retrieval, and message echoing.
+
+### Technology Stack
+- **Framework**: .NET Framework 4.0
+- **Communication**: WCF (Windows Communication Foundation)
+- **Binding**: Basic HTTP Binding
+- **Hosting**: Self-hosted console application
+- **Client**: Console-based test client
+
+### Project Structure
 ```
 dotnet-monolith-v3/
 ├── WcfService.sln                 # Main solution file
-├── WcfServiceLibrary/            # WCF service library project
-│   ├── ISampleService.cs         # Service contract interface
-│   ├── SampleService.cs          # Service implementation
-│   ├── Properties/
-│   │   └── AssemblyInfo.cs      # Assembly metadata
-│   ├── App.config                # Service configuration
-│   └── WcfServiceLibrary.csproj # Project file
-├── WcfServiceHost/               # Service host console application
-│   ├── Program.cs                # Main host program
-│   ├── Properties/
-│   │   └── AssemblyInfo.cs      # Assembly metadata
-│   ├── App.config                # Host configuration
-│   └── WcfServiceHost.csproj    # Project file
-├── WcfServiceClient/             # Service client test application
-│   ├── Program.cs                # Main client program
-│   ├── Properties/
-│   │   └── AssemblyInfo.cs      # Assembly metadata
-│   ├── App.config                # Client configuration
-│   └── WcfServiceClient.csproj  # Project file
-└── README.md                     # This file
+├── WcfServiceLibrary/            # Core service library
+├── WcfServiceHost/               # Service hosting application
+├── WcfServiceClient/             # Test client application
+├── build.bat                     # Windows batch build script
+├── build.ps1                     # PowerShell build script
+└── Documentation files
 ```
 
-## Prerequisites
+## Architecture Overview
 
-- **Visual Studio 2010 or later** (for .NET Framework 4.0 support)
-- **.NET Framework 4.0** installed on the target machine
-- **Windows OS** (WCF is Windows-specific)
+### Architecture Pattern
+- **Service-Oriented Architecture (SOA)**
+- **Client-Server Pattern**
+- **Self-Hosting Pattern**
 
-## Features
+### Key Components
+1. **Service Contract** - Defines the service interface
+2. **Service Implementation** - Business logic implementation
+3. **Service Host** - Runtime environment for the service
+4. **Service Client** - Test client for service validation
+5. **Configuration** - Service and client configuration files
 
-### Service Operations
-- **GetGreeting**: Returns a personalized greeting message
-- **Calculate**: Performs basic arithmetic operations (add, subtract, multiply, divide)
-- **GetServerTime**: Returns the current server time
-- **Echo**: Echoes back the input message
-
-### Production-Ready Features
-- **Error Handling**: Proper fault contracts and exception handling
-- **Configuration Management**: Externalized service configuration
-- **Logging Support**: Ready for integration with logging frameworks
-- **Security**: Basic HTTP binding with extensibility for security
-- **Metadata Exchange**: WSDL generation for service discovery
-- **Instance Management**: Per-call instance context mode for scalability
-
-## Building the Solution
-
-### Using Visual Studio
-1. Open `WcfService.sln` in Visual Studio
-2. Set `WcfServiceHost` as the startup project
-3. Build the solution (Ctrl+Shift+B)
-4. Ensure all projects build successfully
-
-### Using MSBuild Command Line
-```bash
-# Build the entire solution
-msbuild WcfService.sln /p:Configuration=Release /p:Platform="Any CPU"
-
-# Build individual projects
-msbuild WcfServiceLibrary\WcfServiceLibrary.csproj /p:Configuration=Release
-msbuild WcfServiceHost\WcfServiceHost.csproj /p:Configuration=Release
-msbuild WcfServiceClient\WcfServiceClient.csproj /p:Configuration=Release
+### Communication Flow
+```
+[Client] ←→ [WCF Service] ←→ [Business Logic]
+   ↑              ↑                ↑
+HTTP Request   WCF Runtime    Service Methods
 ```
 
-## Running the Application
+## Interface Specifications
 
-### Step 1: Start the Service Host
-1. Navigate to `WcfServiceHost\bin\Release\` (or Debug)
-2. Run `WcfServiceHost.exe`
-3. The service will start and display the endpoint addresses
-4. Keep this console window open
+### ISampleService Contract
 
-### Step 2: Test with the Client
-1. Open a new console window
-2. Navigate to `WcfServiceClient\bin\Release\` (or Debug)
-3. Run `WcfServiceClient.exe`
-4. The client will test all service methods
+#### Service Contract Attributes
+- **Namespace**: `WcfServiceLibrary`
+- **Service Contract**: `[ServiceContract]`
+- **Binding**: Basic HTTP Binding
+- **Transport**: HTTP
+- **Port**: 8733
 
-## Service Endpoints
+#### Operation Contracts
 
-- **Service Endpoint**: `http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/`
-- **Metadata Endpoint**: `http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/mex`
-
-## Configuration
-
-### Service Configuration (App.config)
-The service configuration includes:
-- Basic HTTP binding
-- Service metadata enabled
-- Service debug information (disabled in production)
-- Customizable base addresses
-
-### Client Configuration (App.config)
-The client configuration includes:
-- Service endpoint address
-- Binding configuration
-- Contract reference
-
-## Production Deployment
-
-### Windows Service Deployment
-1. **Create Windows Service**:
-   ```csharp
-   // Extend the service host to run as a Windows Service
-   public class WcfWindowsService : ServiceBase
-   {
-       private ServiceHost serviceHost;
-       
-       protected override void OnStart(string[] args)
-       {
-           serviceHost = new ServiceHost(typeof(SampleService));
-           serviceHost.Open();
-       }
-       
-       protected override void OnStop()
-       {
-           if (serviceHost != null)
-           {
-               serviceHost.Close();
-           }
-       }
-   }
-   ```
-
-2. **Install as Windows Service**:
-   ```bash
-   sc create "WcfSampleService" binPath="C:\Path\To\WcfServiceHost.exe"
-   sc start "WcfSampleService"
-   ```
-
-### IIS Deployment
-1. **Create Web Application**:
-   - Create a new ASP.NET Web Application
-   - Add WCF service references
-   - Configure web.config with service endpoints
-
-2. **Configure Application Pool**:
-   - Set .NET Framework version to 4.0
-   - Configure appropriate identity and permissions
-
-### Configuration Management
-1. **Environment-Specific Configs**:
-   ```xml
-   <!-- Production App.config -->
-   <system.serviceModel>
-     <services>
-       <service name="WcfServiceLibrary.SampleService" 
-                behaviorConfiguration="ProductionBehavior">
-         <endpoint address="" 
-                   binding="basicHttpBinding" 
-                   contract="WcfServiceLibrary.ISampleService" />
-       </service>
-     </services>
-     <behaviors>
-       <serviceBehaviors>
-         <behavior name="ProductionBehavior">
-           <serviceMetadata httpGetEnabled="False" />
-           <serviceDebug includeExceptionDetailInFaults="False" />
-         </behavior>
-       </serviceBehaviors>
-     </behaviors>
-   </system.serviceModel>
-   ```
-
-2. **External Configuration**:
-   - Use `configSource` attribute for external config files
-   - Implement configuration transformation for different environments
-
-## Security Considerations
-
-### Current Implementation
-- Basic HTTP binding (unencrypted)
-- No authentication or authorization
-- Suitable for development and internal networks
-
-### Production Security
-1. **Transport Security**:
-   ```xml
-   <binding name="SecureBinding">
-     <security mode="Transport">
-       <transport clientCredentialType="Windows" />
-     </security>
-   </binding>
-   ```
-
-2. **Message Security**:
-   ```xml
-   <binding name="MessageSecurityBinding">
-     <security mode="Message">
-       <message clientCredentialType="UserName" />
-     </security>
-   </binding>
-   ```
-
-3. **Authentication**:
-   - Windows Authentication
-   - Custom UserName/Password validation
-   - Certificate-based authentication
-
-## Monitoring and Logging
-
-### Performance Counters
+##### 1. GetGreeting Operation
 ```csharp
-// Add performance monitoring
-[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
-[PerformanceCounter("WcfSampleService", "Operations", "Total")]
-public class SampleService : ISampleService
-{
-    // Implementation
-}
+[OperationContract]
+string GetGreeting(string name);
 ```
+- **Purpose**: Returns a personalized greeting message
+- **Input**: `name` (string) - The name to greet
+- **Output**: `string` - Personalized greeting message
+- **Behavior**: 
+  - Returns "Hello, {name}! Welcome to the WCF Service."
+  - If name is null/empty, returns "Hello, Anonymous!"
 
-### Logging Integration
+##### 2. Calculate Operation
 ```csharp
-// Example with log4net
-private static readonly ILog Log = LogManager.GetLogger(typeof(SampleService));
-
-public string GetGreeting(string name)
-{
-    Log.Info($"GetGreeting called with name: {name}");
-    // Implementation
-}
+[OperationContract]
+double Calculate(double a, double b, string operation);
 ```
+- **Purpose**: Performs basic arithmetic operations
+- **Inputs**:
+  - `a` (double) - First number
+  - `b` (double) - Second number
+  - `operation` (string) - Operation type
+- **Output**: `double` - Result of calculation
+- **Supported Operations**:
+  - "add" → a + b
+  - "subtract" → a - b
+  - "multiply" → a * b
+  - "divide" → a / b
+- **Error Handling**: Throws `FaultException` for division by zero or invalid operations
 
-## Troubleshooting
-
-### Common Issues
-1. **Service Won't Start**:
-   - Check if port 8733 is available
-   - Verify .NET Framework 4.0 is installed
-   - Check Windows Firewall settings
-
-2. **Client Connection Failed**:
-   - Ensure service host is running
-   - Verify endpoint addresses match
-   - Check network connectivity
-
-3. **Build Errors**:
-   - Ensure all project references are correct
-   - Verify .NET Framework 4.0 targeting
-   - Clean and rebuild solution
-
-### Debugging
-1. **Enable Service Debug**:
-   ```xml
-   <serviceDebug includeExceptionDetailInFaults="True" />
-   ```
-
-2. **Use WCF Test Client**:
-   - Launch `wcftestclient.exe`
-   - Add service endpoint
-   - Test operations interactively
-
-## Extending the Service
-
-### Adding New Operations
-1. **Update Interface**:
-   ```csharp
-   [OperationContract]
-   string NewOperation(string parameter);
-   ```
-
-2. **Implement Method**:
-   ```csharp
-   public string NewOperation(string parameter)
-   {
-       // Implementation
-       return $"Processed: {parameter}";
-   }
-   ```
-
-3. **Update Client**:
-   - Rebuild service library
-   - Update client configuration if needed
-
-### Adding New Bindings
-1. **Configure New Endpoint**:
-   ```xml
-   <endpoint address="net.tcp://localhost:8734/SampleService"
-             binding="netTcpBinding"
-             contract="WcfServiceLibrary.ISampleService" />
-   ```
-
-2. **Update Client Configuration**:
-   ```xml
-   <endpoint address="net.tcp://localhost:8734/SampleService"
-             binding="netTcpBinding"
-             contract="WcfServiceLibrary.ISampleService"
-             name="NetTcpBinding_ISampleService" />
-   ```
-
-## Performance Optimization
-
-### Instance Management
-- **PerCall**: Default, good for stateless services
-- **PerSession**: For stateful operations
-- **Single**: Singleton pattern, use with caution
-
-### Concurrency
+##### 3. GetServerTime Operation
 ```csharp
-[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
-                 ConcurrencyMode = ConcurrencyMode.Multiple)]
-public class SampleService : ISampleService
-{
-    // Implementation
-}
+[OperationContract]
+DateTime GetServerTime();
+```
+- **Purpose**: Returns the current server time
+- **Input**: None
+- **Output**: `DateTime` - Current server time
+- **Behavior**: Returns `DateTime.Now`
+
+##### 4. Echo Operation
+```csharp
+[OperationContract]
+string Echo(string message);
+```
+- **Purpose**: Echoes back the input message
+- **Input**: `message` (string) - Message to echo
+- **Output**: `string` - Echoed message
+- **Behavior**: 
+  - Returns "Echo: {message}"
+  - If message is null/empty, returns "Echo: (empty message)"
+
+## File Responsibilities
+
+### Solution Level Files
+
+#### WcfService.sln
+- **Purpose**: Visual Studio solution file
+- **Responsibility**: 
+  - Defines project relationships
+  - Manages build configurations
+  - Contains project GUIDs and references
+- **Dependencies**: All project files
+
+#### build.bat
+- **Purpose**: Windows batch build script
+- **Responsibility**: 
+  - Checks for MSBuild availability
+  - Builds the entire solution
+  - Provides user feedback
+- **Usage**: Run from Windows command prompt
+
+#### build.ps1
+- **Purpose**: PowerShell build script
+- **Responsibility**: 
+  - Cross-platform build automation
+  - Error handling and reporting
+  - Build status feedback
+- **Usage**: Run from PowerShell
+
+### WcfServiceLibrary Project
+
+#### WcfServiceLibrary.csproj
+- **Purpose**: Project definition file
+- **Responsibility**: 
+  - Defines target framework (.NET Framework 4.0)
+  - Specifies assembly references
+  - Configures build settings
+- **Key References**:
+  - System.ServiceModel
+  - System.Core
+  - System.Xml
+
+#### ISampleService.cs
+- **Purpose**: Service contract interface
+- **Responsibility**: 
+  - Defines service operations
+  - Specifies data contracts
+  - Declares operation contracts
+- **Key Attributes**: `[ServiceContract]`, `[OperationContract]`
+
+#### SampleService.cs
+- **Purpose**: Service implementation
+- **Responsibility**: 
+  - Implements business logic
+  - Handles error conditions
+  - Provides fault contracts
+- **Key Attributes**: `[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]`
+
+#### App.config
+- **Purpose**: Service configuration
+- **Responsibility**: 
+  - Defines service endpoints
+  - Configures service behaviors
+  - Sets up metadata exchange
+- **Key Sections**: `system.serviceModel`
+
+#### Properties/AssemblyInfo.cs
+- **Purpose**: Assembly metadata
+- **Responsibility**: 
+  - Version information
+  - Assembly attributes
+  - Copyright and company details
+
+### WcfServiceHost Project
+
+#### WcfServiceHost.csproj
+- **Purpose**: Host application project definition
+- **Responsibility**: 
+  - References WcfServiceLibrary
+  - Configures console application
+  - Sets up project dependencies
+
+#### Program.cs
+- **Purpose**: Main application entry point
+- **Responsibility**: 
+  - Creates and configures ServiceHost
+  - Manages service lifecycle
+  - Handles user interaction
+- **Key Operations**:
+  - Service startup
+  - Endpoint display
+  - Graceful shutdown
+
+#### App.config
+- **Purpose**: Host configuration
+- **Responsibility**: 
+  - Service endpoint configuration
+  - Host-specific settings
+  - Port and binding configuration
+
+### WcfServiceClient Project
+
+#### WcfServiceClient.csproj
+- **Purpose**: Client application project definition
+- **Responsibility**: 
+  - References WcfServiceLibrary
+  - Configures test client
+  - Sets up client dependencies
+
+#### Program.cs
+- **Purpose**: Test client implementation
+- **Responsibility**: 
+  - Creates service proxy
+  - Tests all service operations
+  - Demonstrates error handling
+- **Test Coverage**:
+  - All service methods
+  - Error scenarios
+  - Connection management
+
+#### App.config
+- **Purpose**: Client configuration
+- **Responsibility**: 
+  - Service endpoint address
+  - Client binding configuration
+  - Contract references
+
+## Component Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        WCF Service Solution                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐ │
+│  │   WcfService    │    │  WcfService     │    │ WcfService  │ │
+│  │   Library       │    │     Host        │    │   Client    │ │
+│  │                 │    │                 │    │             │ │
+│  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────┐ │ │
+│  │ │ISampleService│ │    │ │   Program   │ │    │ │ Program │ │ │
+│  │ │             │ │    │ │             │ │    │ │         │ │ │
+│  │ │ +GetGreeting│ │    │ │ +Main()     │ │    │ │ +Main() │ │ │
+│  │ │ +Calculate  │ │    │ │ +StartHost()│ │    │ │ +Test() │ │ │
+│  │ │ +GetServer  │ │    │ │ +StopHost() │ │    │ │ +Cleanup│ │ │
+│  │ │   Time      │ │    │ └─────────────┘ │    │ └─────────┘ │ │
+│  │ │ +Echo      │ │    │                 │    │             │ │
+│  │ └─────────────┘ │    │ ┌─────────────┐ │    │ ┌─────────┐ │ │
+│  │                 │    │ │   App.config│ │    │ │App.config│ │ │
+│  │ ┌─────────────┐ │    │ │             │ │    │ │         │ │ │
+│  │ │SampleService│ │    │ │ +Endpoints  │ │    │ │ +Client │ │ │
+│  │ │             │ │    │ │ +Behaviors  │ │    │ │ +Binding│ │ │
+│  │ │ +GetGreeting│ │    │ │ +Host      │ │    │ │ +Address│ │ │
+│  │ │ +Calculate  │ │    │ └─────────────┘ │    │ └─────────┘ │ │
+│  │ │ +GetServer  │ │    │                 │    │             │ │
+│  │ │   Time      │ │    │ ┌─────────────┐ │    │ ┌─────────┐ │ │
+│  │ │ +Echo      │ │    │ │AssemblyInfo │ │    │ │Assembly │ │ │
+│  │ └─────────────┘ │    │ │             │ │    │ │ Info    │ │ │
+│  │                 │    │ │ +Metadata   │ │    │ │ +Metadata│ │ │
+│  │ ┌─────────────┐ │    │ │ +Version    │ │    │ │ +Version │ │ │
+│  │ │   App.config│ │    │ └─────────────┘ │    │ └─────────┘ │ │
+│  │ │             │ │    │                 │    │             │ │
+│  │ │ +Service    │ │    │                 │    │             │ │
+│  │ │ +Endpoints  │ │    │                 │    │             │ │
+│  │ │ +Behaviors  │ │    │                 │    │             │ │
+│  │ └─────────────┘ │    │                 │    │             │ │
+│  │                 │    │                 │    │             │ │
+│  │ ┌─────────────┐ │    │                 │    │             │ │
+│  │ │AssemblyInfo │ │    │                 │    │             │ │
+│  │ │             │ │    │                 │    │             │ │
+│  │ │ +Metadata   │ │    │                 │    │             │ │
+│  │ │ +Version    │ │    │                 │    │             │ │
+│  │ └─────────────┘ │    │                 │    │             │ │
+│  └─────────────────┘    └─────────────────┘    └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    Build Scripts                           │ │
+│  │                                                             │ │
+│  │  ┌─────────────┐                    ┌─────────────────────┐ │ │
+│  │  │ build.bat   │                    │     build.ps1       │ │ │
+│  │  │             │                    │                     │ │ │
+│  │  │ +CheckMSBuild│                   │ +CheckMSBuild       │ │ │
+│  │  │ +Build      │                    │ +Build              │ │ │
+│  │  │ +Report     │                    │ +Report             │ │ │
+│  │  └─────────────┘                    └─────────────────────┘ │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Throttling
+## Sequence Diagrams
+
+### Service Startup Sequence
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Host
+    participant ServiceHost
+    participant SampleService
+    participant Endpoints
+
+    User->>Host: Run WcfServiceHost.exe
+    Host->>Host: Initialize
+    Host->>ServiceHost: Create ServiceHost(SampleService)
+    ServiceHost->>SampleService: Instantiate
+    ServiceHost->>Endpoints: Configure endpoints
+    ServiceHost->>ServiceHost: Open()
+    ServiceHost->>Endpoints: Start listening
+    ServiceHost->>Host: Return success
+    Host->>User: Display endpoints
+    Host->>User: Wait for user input
+    User->>Host: Press any key
+    Host->>ServiceHost: Close()
+    ServiceHost->>Endpoints: Stop listening
+    ServiceHost->>SampleService: Dispose
+    Host->>User: Exit
+```
+
+### Service Operation Sequence
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Channel
+    participant ServiceHost
+    participant SampleService
+    participant Response
+
+    Client->>Channel: CreateChannel()
+    Channel->>ServiceHost: Establish connection
+    ServiceHost->>Channel: Accept connection
+    
+    Client->>Channel: GetGreeting("World")
+    Channel->>ServiceHost: Forward request
+    ServiceHost->>SampleService: GetGreeting("World")
+    SampleService->>SampleService: Process request
+    SampleService->>ServiceHost: Return "Hello, World! Welcome to the WCF Service."
+    ServiceHost->>Channel: Forward response
+    Channel->>Client: Return greeting
+    
+    Client->>Channel: Calculate(10, 5, "add")
+    Channel->>ServiceHost: Forward request
+    ServiceHost->>SampleService: Calculate(10, 5, "add")
+    SampleService->>SampleService: Process calculation
+    SampleService->>ServiceHost: Return 15.0
+    ServiceHost->>Channel: Forward response
+    Channel->>Client: Return result
+    
+    Client->>Channel: Close()
+    Channel->>ServiceHost: Close connection
+    ServiceHost->>Channel: Accept closure
+```
+
+### Error Handling Sequence
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Channel
+    participant ServiceHost
+    participant SampleService
+    participant FaultException
+
+    Client->>Channel: Calculate(10, 0, "divide")
+    Channel->>ServiceHost: Forward request
+    ServiceHost->>SampleService: Calculate(10, 0, "divide")
+    SampleService->>SampleService: Detect division by zero
+    SampleService->>FaultException: Create("Cannot divide by zero.")
+    SampleService->>ServiceHost: Throw FaultException
+    ServiceHost->>Channel: Forward fault
+    Channel->>Client: Throw FaultException
+    Client->>Client: Catch and handle error
+    Client->>Client: Display error message
+```
+
+## Functional Flow
+
+### 1. Service Initialization Flow
+
+```
+1. User executes WcfServiceHost.exe
+   ↓
+2. Program.Main() is called
+   ↓
+3. ServiceHost is created with SampleService type
+   ↓
+4. ServiceHost.Open() is called
+   ↓
+5. WCF runtime initializes
+   ↓
+6. Endpoints are configured from App.config
+   ↓
+7. Service starts listening on configured ports
+   ↓
+8. Service is ready to accept requests
+   ↓
+9. User is prompted to stop service
+   ↓
+10. ServiceHost.Close() is called
+    ↓
+11. Service stops and resources are cleaned up
+```
+
+### 2. Client Request Flow
+
+```
+1. Client creates ChannelFactory<ISampleService>
+   ↓
+2. Channel is created from factory
+   ↓
+3. Client calls service method (e.g., GetGreeting)
+   ↓
+4. Request is serialized to XML
+   ↓
+5. HTTP request is sent to service endpoint
+   ↓
+6. Service receives HTTP request
+   ↓
+7. WCF runtime deserializes request
+   ↓
+8. SampleService method is invoked
+   ↓
+9. Business logic is executed
+   ↓
+10. Response is serialized to XML
+    ↓
+11. HTTP response is sent to client
+    ↓
+12. Client receives and deserializes response
+    ↓
+13. Result is returned to calling code
+```
+
+### 3. Error Handling Flow
+
+```
+1. Client makes request to service
+   ↓
+2. Service processes request
+   ↓
+3. Error condition is detected
+   ↓
+4. FaultException is created with error details
+   ↓
+5. Exception is thrown from service
+   ↓
+6. WCF runtime catches exception
+   ↓
+7. Exception is serialized to fault message
+   ↓
+8. Fault message is sent to client
+   ↓
+9. Client receives fault message
+   ↓
+10. WCF runtime deserializes fault
+    ↓
+11. FaultException is thrown on client
+    ↓
+12. Client catches and handles exception
+```
+
+## Configuration Details
+
+### Service Configuration (WcfServiceLibrary/App.config)
+
 ```xml
-<serviceThrottling maxConcurrentCalls="16"
-                   maxConcurrentInstances="10"
-                   maxConcurrentSessions="10" />
+<system.serviceModel>
+  <services>
+    <service name="WcfServiceLibrary.SampleService" 
+             behaviorConfiguration="SampleServiceBehavior">
+      <endpoint address="" 
+                binding="basicHttpBinding" 
+                contract="WcfServiceLibrary.ISampleService">
+        <identity>
+          <dns value="localhost" />
+        </identity>
+      </endpoint>
+      <endpoint address="mex" 
+                binding="mexHttpBinding" 
+                contract="IMetadataExchange" />
+      <host>
+        <baseAddresses>
+          <add baseAddress="http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/" />
+        </baseAddresses>
+      </host>
+    </service>
+  </services>
+  <behaviors>
+    <serviceBehaviors>
+      <behavior name="SampleServiceBehavior">
+        <serviceMetadata httpGetEnabled="True" httpsGetEnabled="False" />
+        <serviceDebug includeExceptionDetailInFaults="False" />
+      </behavior>
+    </serviceBehaviors>
+  </behaviors>
+</system.serviceModel>
 ```
 
-## Testing
+### Client Configuration (WcfServiceClient/App.config)
 
-### Unit Testing
-```csharp
-[TestClass]
-public class SampleServiceTests
-{
-    [TestMethod]
-    public void GetGreeting_ValidName_ReturnsGreeting()
-    {
-        // Arrange
-        var service = new SampleService();
-        
-        // Act
-        var result = service.GetGreeting("Test");
-        
-        // Assert
-        Assert.AreEqual("Hello, Test! Welcome to the WCF Service.", result);
-    }
-}
+```xml
+<system.serviceModel>
+  <client>
+    <endpoint address="http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/" 
+              binding="basicHttpBinding" 
+              contract="WcfServiceLibrary.ISampleService" 
+              name="BasicHttpBinding_ISampleService" />
+  </client>
+</system.serviceModel>
 ```
 
-### Integration Testing
-- Use WCF Test Client
-- Create automated test clients
-- Test with different bindings and configurations
+### Configuration Elements Explained
 
-## License
+- **Service Endpoint**: Main service communication point
+- **Metadata Endpoint**: WSDL generation for service discovery
+- **Base Addresses**: Service hosting location
+- **Binding**: HTTP communication protocol
+- **Behaviors**: Service metadata and debugging configuration
 
-This project is provided as-is for educational and development purposes.
+## Build and Deployment
 
-## Support
+### Build Process
 
-For issues and questions:
-1. Check the troubleshooting section
-2. Review WCF documentation
-3. Check .NET Framework 4.0 compatibility
+```
+1. MSBuild reads solution file (WcfService.sln)
+   ↓
+2. Project dependencies are resolved
+   ↓
+3. WcfServiceLibrary is built first
+   ↓
+4. WcfServiceHost is built (references library)
+   ↓
+5. WcfServiceClient is built (references library)
+   ↓
+6. Output assemblies are generated
+   ↓
+7. Configuration files are copied
+   ↓
+8. Build artifacts are ready for deployment
+```
+
+### Build Output Structure
+
+```
+bin/Release/
+├── WcfServiceHost.exe          # Service host executable
+├── WcfServiceHost.exe.config   # Host configuration
+├── WcfServiceLibrary.dll       # Service library
+├── WcfServiceClient.exe        # Test client executable
+├── WcfServiceClient.exe.config # Client configuration
+└── Dependencies/               # Required .NET assemblies
+```
+
+### Deployment Options
+
+1. **Self-Hosted Console Application**
+   - Copy executable and configuration files
+   - Run from command line
+   - Suitable for development and testing
+
+2. **Windows Service**
+   - Install as Windows service
+   - Automatic startup and recovery
+   - Suitable for production
+
+3. **IIS Hosting**
+   - Deploy to IIS application
+   - Web.config configuration
+   - Suitable for web-based scenarios
+
+## Testing and Validation
+
+### Test Coverage
+
+#### Functional Testing
+- **GetGreeting**: Valid names, null/empty names
+- **Calculate**: All arithmetic operations, error conditions
+- **GetServerTime**: Time accuracy and format
+- **Echo**: Valid messages, null/empty messages
+
+#### Error Testing
+- **Division by zero**: Verify FaultException
+- **Invalid operations**: Verify error messages
+- **Connection failures**: Verify client handling
+
+#### Performance Testing
+- **Response time**: Measure operation latency
+- **Throughput**: Test concurrent requests
+- **Resource usage**: Monitor memory and CPU
+
+### Validation Commands
+
+```bash
+# Test service availability
+curl http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/
+
+# Test specific operations
+curl -X POST http://localhost:8733/Design_Time_Addresses/WcfServiceLibrary/SampleService/ \
+  -H "Content-Type: application/json" \
+  -d '{"operation": "GetGreeting", "name": "Test"}'
+
+# Run test client
+./WcfServiceClient/bin/Release/WcfServiceClient.exe
+```
+
+### Test Scenarios
+
+1. **Happy Path Testing**
+   - All operations with valid inputs
+   - Verify correct responses
+   - Check response formats
+
+2. **Error Path Testing**
+   - Invalid inputs
+   - Boundary conditions
+   - Exception scenarios
+
+3. **Integration Testing**
+   - End-to-end workflows
+   - Multiple client connections
+   - Service restart scenarios
+
+## Summary
+
+This WCF service project demonstrates a well-structured, production-ready service-oriented architecture with:
+
+- **Clear separation of concerns** between contract, implementation, and hosting
+- **Comprehensive error handling** with fault contracts
+- **Flexible configuration** for different deployment scenarios
+- **Professional build automation** with multiple build scripts
+- **Thorough testing capabilities** with dedicated test client
+- **Production deployment options** for various hosting environments
+
+The architecture follows WCF best practices and provides a solid foundation for enterprise service development.

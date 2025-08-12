@@ -10,6 +10,13 @@ namespace WcfServiceLibrary
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class SampleService : ISampleService
     {
+        private readonly AuthenticationService _authService;
+
+        public SampleService()
+        {
+            _authService = new AuthenticationService();
+        }
+
         /// <summary>
         /// Gets a greeting message
         /// </summary>
@@ -75,6 +82,29 @@ namespace WcfServiceLibrary
             }
             
             return $"Echo: {message}";
+        }
+
+        /// <summary>
+        /// Authenticates a user with username and password
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="password">The password</param>
+        /// <returns>Login result with token and user info</returns>
+        public LoginResult Login(string username, string password)
+        {
+            try
+            {
+                return _authService.AuthenticateUser(username, password);
+            }
+            catch (Exception ex)
+            {
+                return new LoginResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Login failed: {ex.Message}",
+                    LoginTime = DateTime.Now
+                };
+            }
         }
     }
 }
