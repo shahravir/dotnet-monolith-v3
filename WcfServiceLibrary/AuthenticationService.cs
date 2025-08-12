@@ -143,7 +143,7 @@ namespace WcfServiceLibrary
         /// </summary>
         /// <param name="password">The password to hash</param>
         /// <returns>Hashed password</returns>
-        private string HashPassword(string password)
+        private static string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
             {
@@ -157,7 +157,7 @@ namespace WcfServiceLibrary
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>Generated token</returns>
-        private string GenerateToken(string username)
+        private static string GenerateToken(string username)
         {
             var tokenData = $"{username}:{DateTime.UtcNow.Ticks}";
             var tokenBytes = Encoding.UTF8.GetBytes(tokenData);
@@ -169,7 +169,7 @@ namespace WcfServiceLibrary
         /// </summary>
         /// <param name="token">The token to decode</param>
         /// <returns>Username from token</returns>
-        private string DecodeToken(string token)
+        private static string DecodeToken(string token)
         {
             var tokenBytes = Convert.FromBase64String(token);
             var tokenString = Encoding.UTF8.GetString(tokenBytes);

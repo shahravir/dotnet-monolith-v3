@@ -1,0 +1,6 @@
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/bin/Debug/WcfServiceLibrary.dll.config
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/bin/Debug/WcfServiceLibrary.dll
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/bin/Debug/WcfServiceLibrary.pdb
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/obj/Debug/WcfServiceLibrary.csproj.CoreCompileInputs.cache
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/obj/Debug/WcfServiceLibrary.dll
+/Users/ravishah/Downloads/repos/dotnet-monolith-v3/WcfServiceLibrary/obj/Debug/WcfServiceLibrary.pdb
